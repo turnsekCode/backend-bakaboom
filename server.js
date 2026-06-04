@@ -22,7 +22,8 @@ connectCloudinary();
 app.use(express.json());
 //app.use(cors({ origin: "*", credentials: true }));
 const allowedOrigins = [
-  "https://www.bakaboom.es/",
+  "https://bakaboom.es/",
+  "https://web.bakaboom.es/",
   "https://admin-bakaboom.vercel.app",
   "http://localhost:5173",
   "http://localhost:5174",
