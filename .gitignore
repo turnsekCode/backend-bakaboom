@@ -1,0 +1,46 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+dist/
+build/
+
+# Entorno
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+
+# Cobertura de pruebas
+coverage/
+.nyc_output/
+
+# Archivos del sistema operativo
+.DS_Store
+Thumbs.db
+
+# Archivos de lock de dependencias
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# IDEs y editores
+.idea/
+.vscode/
+*.swp
+
+# Archivos temporales
+*.tmp
+*.temp
+*.bak
+*.old
+
+# Otros
+*.zip
+*.tar
+*.gz
+*.rar
