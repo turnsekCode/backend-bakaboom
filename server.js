@@ -24,6 +24,7 @@ app.use(express.json());
 const allowedOrigins = [
   "https://bakaboom.es",
   "https://web.bakaboom.es",
+  "https://admin.bakaboom.es",
   "https://admin-bakaboom.vercel.app",
   "http://localhost:5173",
   "http://localhost:5174",
