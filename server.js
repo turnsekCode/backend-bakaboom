@@ -475,7 +475,7 @@ app.post("/send-email", (req, res) => {
   const mailOptions = {
     from: "pixel.tech.t@gmail.com",
     to: shippingInfo?.email, // Correo del cliente
-    cc: "pixel.tech.t@gmail.com",
+    cc: "bakaboompublicidad@gmail.com",
     bcc: "pixel.tech.t@gmail.com", // Copias ocultas
     subject: `Pedido realizado`,
     html: emailContent,
@@ -757,7 +757,7 @@ app.post("/send-email-status", async (req, res) => {
   const mailOptions = {
     from: "pixel.tech.t@gmail.com",
     to: email,
-    cc: "pixel.tech.t@gmail.com",
+    cc: "bakaboompublicidad@gmail.com",
     bcc: "pixel.tech.t@gmail.com", // Copias ocultas
     subject: `Estado de tu pedido: ${orderNumber}`,
     html: emailContent,
@@ -1073,7 +1073,7 @@ app.post("/send-email-contact", async (req, res) => {
   // 3. Configuración del correo electrónico
   const mailOptions = {
     from: "pixel.tech.t@gmail.com", // Cuenta emisora (tu servidor)
-    to: "pixel.tech.t@gmail.com", // El correo donde quieres RECIBIR los mensajes de tus clientes
+    to: "bakaboompublicidad@gmail.com", // El correo donde quieres RECIBIR los mensajes de tus clientes
     cc: "pixel.tech.t@gmail.com", // Copia de respaldo para ti si lo deseas
     replyTo: email, // Permite que si das clic a "Responder" en tu mail, le responda directo al cliente
     subject: `Nuevo mensaje de contacto: ${nombre} (${tipoCliente || "No especificado"})`,
