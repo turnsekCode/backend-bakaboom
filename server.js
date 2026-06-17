@@ -404,7 +404,7 @@ app.post("/send-email", (req, res) => {
       </div>
       <div style="text-align:center;margin-top:35px;">
       <a
-      href="https://wa.me/34672563452"
+      href="https://wa.me/630700424"
       target="_blank"
       style="
       background:#25D366;
@@ -687,7 +687,7 @@ app.post("/send-email-status", async (req, res) => {
     "
     >
     <a
-    href="https://wa.me/34672563452"
+    href="https://wa.me/630700424"
     target="_blank"
     style="
     background:#25D366;
