@@ -21,7 +21,7 @@ const placeOrder = async (req, res) => {
 
     res.json({ success: true, message: "Order placed" });
   } catch (error) {
-    //console.log(error)
+    ////console.log(error)
     res.json({ success: false, message: error.message });
   }
 };
@@ -29,7 +29,7 @@ const placeOrder = async (req, res) => {
 // Verify order after payment
 const verifyOrder = async (req, res) => {
   const { orderId, success } = req.body;
-  //console.log("req.body", req.body);  // Verifica que los datos estén llegando
+  ////console.log("req.body", req.body);  // Verifica que los datos estén llegando
 
   try {
     if (success === "true") {
@@ -40,7 +40,7 @@ const verifyOrder = async (req, res) => {
       res.json({ success: false, message: "Order failed" });
     }
   } catch (error) {
-    //console.log(error);
+    ////console.log(error);
     res.json({ success: false, message: error.message });
   }
 };
@@ -172,27 +172,27 @@ const placeOrderRedsys = async (req, res) => {
       JSON.stringify(merchantParameters),
     ).toString("base64");
 
-    console.log("\n========== REDSYS DEBUG ==========\n");
+    //console.log("\n========== REDSYS DEBUG ==========\n");
 
-    console.log("REDSYS_SECRET_KEY:", process.env.REDSYS_SECRET_KEY);
+    //console.log("REDSYS_SECRET_KEY:", process.env.REDSYS_SECRET_KEY);
 
-    console.log("REDSYS_MERCHANT_CODE:", process.env.REDSYS_MERCHANT_CODE);
+    //console.log("REDSYS_MERCHANT_CODE:", process.env.REDSYS_MERCHANT_CODE);
 
-    console.log("REDSYS_TERMINAL:", process.env.REDSYS_TERMINAL);
+    //console.log("REDSYS_TERMINAL:", process.env.REDSYS_TERMINAL);
 
-    console.log("REDSYS_URL:", process.env.REDSYS_URL);
+    //console.log("REDSYS_URL:", process.env.REDSYS_URL);
 
-    console.log("\nTOTAL AMOUNT:", totalAmount);
+    //console.log("\nTOTAL AMOUNT:", totalAmount);
 
-    console.log("\nREDSYS ORDER:", redsysOrder);
+    //console.log("\nREDSYS ORDER:", redsysOrder);
 
-    console.log("\nMERCHANT PARAMETERS OBJECT:");
+    //console.log("\nMERCHANT PARAMETERS OBJECT:");
 
-    console.log(JSON.stringify(merchantParameters, null, 2));
+    //console.log(JSON.stringify(merchantParameters, null, 2));
 
-    console.log("\nMERCHANT PARAMETERS BASE64:");
+    //console.log("\nMERCHANT PARAMETERS BASE64:");
 
-    console.log(merchantParametersBase64);
+    //console.log(merchantParametersBase64);
 
     // signature
 
@@ -201,11 +201,11 @@ const placeOrderRedsys = async (req, res) => {
       redsysOrder,
       merchantParametersBase64,
     );
-    console.log("\nSIGNATURE:");
+    //console.log("\nSIGNATURE:");
 
-    console.log(signature);
+    //console.log(signature);
 
-    console.log("\n========== END REDSYS DEBUG ==========\n");
+    //console.log("\n========== END REDSYS DEBUG ==========\n");
 
     res.json({
       success: true,
@@ -221,7 +221,7 @@ const placeOrderRedsys = async (req, res) => {
       },
     });
   } catch (error) {
-    console.log(error);
+    //console.log(error);
 
     res.json({
       success: false,
@@ -244,7 +244,7 @@ const verifyOrderRedsys = async (req, res) => {
         { payment: true },
         { new: true } // 👈 IMPORTANTE: devuelve el pedido actualizado
       );
-      console.log("Orden actualizada:", order);
+      //console.log("Orden actualizada:", order);
       return res.json({
         success: true,
         message: "Pago realizado",
@@ -259,7 +259,7 @@ const verifyOrderRedsys = async (req, res) => {
       });
     }
   } catch (error) {
-    console.log(error);
+    //console.log(error);
 
     res.json({
       success: false,
@@ -275,7 +275,7 @@ const allOrders = async (req, res) => {
     const orders = await orderModel.find({});
     res.json({ success: true, orders });
   } catch (error) {
-    //console.log(error)
+    ////console.log(error)
     res.json({ success: false, message: error.message });
   }
 };
@@ -292,7 +292,7 @@ const updateStatus = async (req, res) => {
     await orderModel.findOneAndUpdate({ _id: orderId }, { status });
     res.json({ success: true, message: "Order status updated" });
   } catch (error) {
-    //console.log(error)
+    ////console.log(error)
     res.json({ success: false, message: error.message });
   }
 };

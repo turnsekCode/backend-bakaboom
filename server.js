@@ -70,7 +70,7 @@ app.post("/send-email", (req, res) => {
     envioPersonal,
   } = req.body;
   // Verificar si faltan datos obligatorios
-  console.log("Datos recibidos para enviar email:", req.body);
+  //console.log("Datos recibidos para enviar email:", req.body);
   if (
     !cartDetails ||
     !subtotal ||
@@ -484,7 +484,7 @@ app.post("/send-email", (req, res) => {
   // Enviar correo
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
-      //console.log(error);
+      ////console.log(error);
       return res.status(500).json({ success: false, message: error.message });
     }
     res

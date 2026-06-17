@@ -184,8 +184,8 @@ const updateProduct = async (req, res) => {
       textPersonal,
     } = req.body;
 
-    console.log("REQ BODY:", req.body);
-    console.log("VARIANTS RAW:", req.body.variants);
+    //console.log("REQ BODY:", req.body);
+    //console.log("VARIANTS RAW:", req.body.variants);
 
     const { id } = req.params;
 
@@ -259,7 +259,7 @@ const updateProduct = async (req, res) => {
 const updateProductQuantity = async (req, res) => {
   try {
     const { id, quantity, size, color, realSize, realColor } = req.body;
-    console.log("Updating product quantity:", req.body);
+    //console.log("Updating product quantity:", req.body);
 
     const product = await productModel.findById(id);
 
