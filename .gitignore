@@ -44,3 +44,5 @@ pnpm-lock.yaml
 *.tar
 *.gz
 *.rar
+
+.vercel

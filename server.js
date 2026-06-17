@@ -22,8 +22,8 @@ connectCloudinary();
 app.use(express.json());
 //app.use(cors({ origin: "*", credentials: true }));
 const allowedOrigins = [
-  "https://bakaboom.es/",
-  "https://web.bakaboom.es/",
+  "https://bakaboom.es",
+  "https://web.bakaboom.es",
   "https://admin-bakaboom.vercel.app",
   "http://localhost:5173",
   "http://localhost:5174",
@@ -69,15 +69,16 @@ app.post("/send-email", (req, res) => {
     envioPersonal,
   } = req.body;
   // Verificar si faltan datos obligatorios
+  console.log("Datos recibidos para enviar email:", req.body);
   if (
     !cartDetails ||
     !subtotal ||
-    !shippingFee ||
     !total ||
     !currency ||
     !orderNumber ||
     !shippingInfo ||
-    discount === undefined
+    shippingFee === undefined || shippingFee === null || // 👈 Permite el 0
+    discount === undefined || discount === null          // 👈 Permite el 0
   ) {
     return res.status(400).json({
       success: false,
