@@ -11,6 +11,7 @@ import categoryRouter from "./routes/categoryRoute.js";
 import orderRoute from "./routes/orderRoute.js";
 import bannerRouter from "./routes/bannerRoute.js";
 import reviewRouter from "./routes/reviewRoute.js";
+import orderModel from "./models/orderModel.js";
 
 // App config
 const app = express();
@@ -203,9 +204,8 @@ app.post("/send-email", (req, res) => {
       Muchas gracias por tu pedido.
       Estamos emocionados de que esta creación llegue a tus manos.
       </p>
-      ${
-        !envioPersonal
-          ? `
+      ${!envioPersonal
+      ? `
       <div
       style="
       background:#f8fafc;
@@ -226,8 +226,8 @@ app.post("/send-email", (req, res) => {
       </p>
       </div>
       `
-          : ""
-      }
+      : ""
+    }
       <div
       style="
       background:#f8fafc;
@@ -266,22 +266,20 @@ app.post("/send-email", (req, res) => {
       <th style="padding:14px;text-align:left;">Imagen</th>
       <th style="padding:14px;text-align:left;">Color</th>
       <th style="padding:14px;text-align:left;">Talla</th>
-      ${
-        cartDetails.some((item) => item.anos !== null)
-          ? '<th style="padding:14px;text-align:left;">Años</th>'
-          : ""
-      }
-      ${
-        cartDetails.some((item) => item.textPersonal?.trim())
-          ? '<th style="padding:14px;text-align:left;">Texto</th>'
-          : ""
-      }
+      ${cartDetails.some((item) => item.anos !== null)
+      ? '<th style="padding:14px;text-align:left;">Años</th>'
+      : ""
+    }
+      ${cartDetails.some((item) => item.textPersonal?.trim())
+      ? '<th style="padding:14px;text-align:left;">Texto</th>'
+      : ""
+    }
       </tr>
       </thead>
       <tbody>
       ${cartDetails
-        .map(
-          (item) => `
+      .map(
+        (item) => `
 
       <tr style="border-bottom:1px solid #e5e7eb;">
       <td style="padding:15px;">
@@ -312,15 +310,14 @@ app.post("/send-email", (req, res) => {
       ${item.size || "-"}
       </td>
       ${item.anos !== null ? `<td style="padding:15px;">${item.anos}</td>` : ""}
-      ${
-        item.textPersonal?.trim()
-          ? `<td style="padding:15px;">${item.textPersonal}</td>`
-          : ""
-      }
+      ${item.textPersonal?.trim()
+            ? `<td style="padding:15px;">${item.textPersonal}</td>`
+            : ""
+          }
       </tr>
       `,
-        )
-        .join("")}
+      )
+      .join("")}
       </tbody>
       </table>
       </div>
@@ -494,7 +491,7 @@ app.post("/send-email", (req, res) => {
 });
 
 app.post("/send-email-status", async (req, res) => {
-  const { orderId, status, email, orderNumber } = req.body;
+  const { orderId, status, email, orderNumber, trackingNumber } = req.body;
   if (!orderId || !status || !email || !orderNumber) {
     return res
       .status(400)
@@ -512,12 +509,46 @@ app.post("/send-email-status", async (req, res) => {
         ¿Tienes alguna pregunta o inquietud? No dudes en hacérnoslo saber. Estamos aquí para ayudarte.</p>
         <p>Gracias por elegirnos.</p>`;
       case "Enviado":
-        return `<h2 style="color: #0368B2;">¡Hola!</h2>
-        <p>¡Buenas noticias!</p>
-        <p>Tu pedido: <strong>${orderNumber}</strong> ya fué enviado y está en camino hacia ti.</p>
-        <p><strong>Nuevo estado:</strong> ${status}</p>
-        <p>Estimamos que llegará a tu dirección en 3 a 4 días hábiles por Correos. Esperamos que estés emocionado de recibir tu pedido. Si tienes alguna pregunta o inquietud, no dudes en hacérnoslo saber. Estamos aquí para ayudarte.</p>
-        <p>Nuevamente, gracias por elegirnos.</p>`;
+        return `
+          <h2 style="color: #0368B2;">¡Hola!</h2>
+          <p>¡Buenas noticias!</p>
+          <p>
+            Tu pedido <strong>${orderNumber}</strong>
+            ya ha sido enviado y está en camino hacia ti.
+          </p>
+          <p><strong>Nuevo estado:</strong> ${status}</p>
+          ${trackingNumber
+                  ? `
+                <div style="
+                  margin:20px 0;
+                  padding:15px;
+                  background:#f0f9ff;
+                  border:1px solid #0ea5e9;
+                  border-radius:8px;
+                ">
+                  <p style="margin:0;">
+                    <strong>Número de seguimiento:</strong>
+                  </p>
+                  <p style="
+                    font-size:20px;
+                    font-weight:bold;
+                    color:#0368B2;
+                    margin-top:10px;
+                  ">
+                    ${trackingNumber}
+                  </p>
+                </div>
+              `
+                  : ""
+                }
+          <p>
+            Estimamos que llegará a tu dirección en 3 a 4 días hábiles por Correos.
+          </p>
+          <p>
+            Si tienes cualquier duda, estaremos encantados de ayudarte.
+          </p>
+          <p>Gracias por confiar en nosotros.</p>
+        `;
       default:
         return `<h2 style="color: #0368B2;">¡Hola!</h2>
           <p>Queremos informarte que el estado de tu pedido <strong>${orderNumber}</strong> ha cambiado.</p>
@@ -762,7 +793,11 @@ app.post("/send-email-status", async (req, res) => {
     subject: `Estado de tu pedido: ${orderNumber}`,
     html: emailContent,
   };
-
+  if (status === "Enviado" && trackingNumber) {
+    await orderModel.findByIdAndUpdate(orderId, {
+      trackingNumber,
+    });
+  }
   try {
     await transporter.sendMail(mailOptions);
     res
