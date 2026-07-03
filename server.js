@@ -52,8 +52,8 @@ app.use(
 const transporter = nodemailer.createTransport({
   service: "gmail", // Usa el servicio que prefieras
   auth: {
-    user: "pixel.tech.t@gmail.com", // Reemplaza con tu correo
-    pass: "uifc sttc klfd qlqq", // Reemplaza con tu contraseña: contraseña pixel: uifc sttc klfd qlqq
+    user: "bakaboompublicidad@gmail.com", // Reemplaza con tu correo
+    pass: "tbga lbug wiwe gmvl", // Reemplaza con tu contraseña: contraseña pixel: uifc sttc klfd qlqq, contraseña bakaboom: tbga lbug wiwe gmvl
   },
 });
 // Ruta para enviar el correo
