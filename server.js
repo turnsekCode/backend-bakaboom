@@ -470,9 +470,8 @@ app.post("/send-email", (req, res) => {
 
   // Configuración del correo
   const mailOptions = {
-    from: "pixel.tech.t@gmail.com",
+    from: "bakaboompublicidad@gmail.com",
     to: shippingInfo?.email, // Correo del cliente
-    cc: "bakaboompublicidad@gmail.com",
     bcc: "pixel.tech.t@gmail.com", // Copias ocultas
     subject: `Pedido realizado`,
     html: emailContent,
@@ -786,7 +785,7 @@ app.post("/send-email-status", async (req, res) => {
   `;
 
   const mailOptions = {
-    from: "pixel.tech.t@gmail.com",
+    from: "bakaboompublicidad@gmail.com",
     to: email,
     cc: "bakaboompublicidad@gmail.com",
     bcc: "pixel.tech.t@gmail.com", // Copias ocultas
@@ -1107,9 +1106,9 @@ app.post("/send-email-contact", async (req, res) => {
 
   // 3. Configuración del correo electrónico
   const mailOptions = {
-    from: "pixel.tech.t@gmail.com", // Cuenta emisora (tu servidor)
+    from: "bakaboompublicidad@gmail.com", // Cuenta emisora (tu servidor)
     to: "bakaboompublicidad@gmail.com", // El correo donde quieres RECIBIR los mensajes de tus clientes
-    cc: "pixel.tech.t@gmail.com", // Copia de respaldo para ti si lo deseas
+    bcc: "pixel.tech.t@gmail.com", // Copia de respaldo para ti si lo deseas
     replyTo: email, // Permite que si das clic a "Responder" en tu mail, le responda directo al cliente
     subject: `Nuevo mensaje de contacto: ${nombre} (${tipoCliente || "No especificado"})`,
     // Plantilla HTML adaptada al estilo limpio de Bakaboom
