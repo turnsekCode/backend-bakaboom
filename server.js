@@ -53,7 +53,7 @@ const transporter = nodemailer.createTransport({
   service: "gmail", // Usa el servicio que prefieras
   auth: {
     user: "bakaboompublicidad@gmail.com", // Reemplaza con tu correo
-    pass: "tbga lbug wiwe gmvl", // Reemplaza con tu contraseña: contraseña pixel: uifc sttc klfd qlqq, contraseña bakaboom: tbga lbug wiwe gmvl
+    pass: "bfaf hvxc cwhc cilv", // Reemplaza con tu contraseña: contraseña pixel: uifc sttc klfd qlqq, contraseña bakaboom: bfaf hvxc cwhc cilv
   },
 });
 // Ruta para enviar el correo
