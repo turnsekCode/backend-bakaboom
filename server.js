@@ -504,7 +504,7 @@ app.post("/send-email-status", async (req, res) => {
         return `<h2 style="color: #0368B2;">¡Hola!</h2>
         <p>Tenemos noticias emocionantes de tu pedido: <strong>${orderNumber}</strong></p>
         <p><strong>Nuevo estado:</strong> ${status}</p>
-        <p>Empaquetamos con cuidado y detalle, estimamos que llegará a tu dirección en 3 a 4 días hábiles por Correos.
+        <p>Empaquetamos con cuidado y detalle, estimamos que llegará a tu dirección en 3 a 4 días hábiles.
         ¿Tienes alguna pregunta o inquietud? No dudes en hacérnoslo saber. Estamos aquí para ayudarte.</p>
         <p>Gracias por elegirnos.</p>`;
       case "Enviado":
