@@ -24,6 +24,7 @@ app.use(express.json());
 //app.use(cors({ origin: "*", credentials: true }));
 const allowedOrigins = [
   "https://bakaboom.es",
+  "https://www.bakaboom.es",
   "https://web.bakaboom.es",
   "https://admin.bakaboom.es",
   "https://admin-bakaboom.vercel.app",
