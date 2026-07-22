@@ -473,7 +473,7 @@ app.post("/send-email", (req, res) => {
   const mailOptions = {
     from: "bakaboompublicidad@gmail.com",
     to: shippingInfo?.email, // Correo del cliente
-    bcc: "pixel.tech.t@gmail.com", // Copias ocultas
+    bcc: "pixel.tech.t@gmail.com, bakaboompublicidad@gmail.com", // Copias ocultas
     subject: `Pedido realizado`,
     html: emailContent,
   };
