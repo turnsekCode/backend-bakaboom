@@ -297,12 +297,24 @@ const updateStatus = async (req, res) => {
   }
 };
 
+const deleteOrder = async (req, res) => {
+  try {
+    const { orderId } = req.body;
+    await orderModel.findByIdAndDelete(orderId);
+    res.json({ success: true, message: "Pedido borrado" });
+  } catch (error) {
+    ////console.log(error)
+    res.json({ success: false, message: error.message });
+  }
+};
+
 export {
   placeOrder,
   allOrders,
   userOrders,
   updateStatus,
   verifyOrder,
+  deleteOrder,
   // REDSYS
   placeOrderRedsys,
   verifyOrderRedsys,
