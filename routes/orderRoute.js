@@ -1,5 +1,5 @@
 import express from 'express'
-import {placeOrder,allOrders,userOrders,updateStatus, verifyOrder, placeOrderRedsys, verifyOrderRedsys, redsysNotification} from '../controllers/orderController.js'
+import {placeOrder,allOrders,userOrders,updateStatus, verifyOrder, placeOrderRedsys, verifyOrderRedsys,redsysNotification,  deleteOrder} from '../controllers/orderController.js'
 import adminAuth from '../middleware/adminAuth.js'
 
 
@@ -22,6 +22,7 @@ orderRoute.post(
   "/redsys/notification",
   redsysNotification
 );
+orderRoute.post('/delete', adminAuth, deleteOrder)
 
 
 
