@@ -996,6 +996,7 @@ const placeOrderRedsys = async (req, res) => {
       address,
       orderNumber,
       delivery_fee,
+      paymentMethod,
     } = req.body;
 
     const { origin } = req.headers;
@@ -1026,7 +1027,7 @@ const placeOrderRedsys = async (req, res) => {
 
       amount,
 
-      paymentMethod: "Redsys",
+      paymentMethod: "card",
 
       payment: false,
 
@@ -1065,6 +1066,10 @@ const placeOrderRedsys = async (req, res) => {
 
       DS_MERCHANT_URLKO:
         `${origin}/verify?success=false&orderId=${newOrder._id}`,
+
+      ...(paymentMethod === "bizum"
+        ? { DS_MERCHANT_PAYMETHODS: "z" }
+        : {})
     };
 
     const merchantParametersBase64 = Buffer.from(
