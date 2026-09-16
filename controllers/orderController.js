@@ -1027,7 +1027,7 @@ const placeOrderRedsys = async (req, res) => {
 
       amount,
 
-      paymentMethod: "card",
+      paymentMethod,
 
       payment: false,
 
