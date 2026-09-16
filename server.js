@@ -12,6 +12,8 @@ import orderRoute from "./routes/orderRoute.js";
 import bannerRouter from "./routes/bannerRoute.js";
 import reviewRouter from "./routes/reviewRoute.js";
 import orderModel from "./models/orderModel.js";
+import sitemapRoute from "./routes/sitemapRoute.js";
+
 
 // App config
 const app = express();
@@ -20,6 +22,9 @@ connectDB();
 connectCloudinary();
 
 //middlewares
+app.use(express.urlencoded({
+  extended: false,
+}));
 app.use(express.json());
 //app.use(cors({ origin: "*", credentials: true }));
 const allowedOrigins = [
@@ -34,6 +39,7 @@ const allowedOrigins = [
   "http://localhost:5175",
   "http://192.168.1.142:5176",
   "http://192.168.1.167:5176",
+  "http://localhost:4173",
 ];
 
 app.use(
@@ -1132,6 +1138,99 @@ app.post("/send-email-contact", async (req, res) => {
   }
 });
 
+app.post("/send-payment-failed-email", async (req, res) => {
+  try {
+    const { orderId } = req.body;
+
+    if (!orderId) {
+      return res.status(400).json({
+        success: false,
+        message: "Falta el orderId",
+      });
+    }
+
+    // Buscar el pedido real en MongoDB
+    const order = await orderModel.findById(orderId);
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Pedido no encontrado",
+      });
+    }
+
+    const emailContent = `
+      <h2>⚠️ Pago fallido</h2>
+
+      <p>Se ha producido un intento de pago que no se ha completado.</p>
+
+      <hr>
+
+      <p>
+        <strong>Número de pedido:</strong>
+        ${order.orderNumber || "-"}
+      </p>
+
+      <p>
+        <strong>Order ID:</strong>
+        ${order._id}
+      </p>
+
+      <p>
+        <strong>Importe:</strong>
+        ${order.amount || 0}€
+      </p>
+
+      <p>
+        <strong>Cliente:</strong>
+        ${order.address?.name || "-"}
+      </p>
+
+      <p>
+        <strong>Email del cliente:</strong>
+        ${order.address?.email || "-"}
+      </p>
+
+      <p>
+        <strong>Teléfono:</strong>
+        ${order.address?.phone || "-"}
+      </p>
+
+      <hr>
+
+      <p>
+        El pedido se creó, pero el pago no se completó correctamente.
+      </p>
+    `;
+
+    const mailOptions = {
+      from: "bakaboompublicidad@gmail.com",
+      to: "bakaboompublicidad@gmail.com",
+      bcc: "pixel.tech.t@gmail.com",
+      subject: `⚠️ Pago fallido - Pedido ${order.orderNumber || order._id}`,
+      html: emailContent,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    res.status(200).json({
+      success: true,
+      message: "Aviso de pago fallido enviado correctamente",
+    });
+
+  } catch (error) {
+    console.error(
+      "Error enviando aviso de pago fallido:",
+      error
+    );
+
+    res.status(500).json({
+      success: false,
+      message: "Error enviando aviso de pago fallido",
+    });
+  }
+});
+
 // api endpoints
 app.use("/api/user", userRouter);
 app.use("/api/product", productRouter);
@@ -1140,6 +1239,7 @@ app.use("/api/category", categoryRouter);
 app.use("/api/order", orderRoute);
 app.use("/api/banner", bannerRouter);
 app.use("/api/review", reviewRouter);
+app.use("/", sitemapRoute);
 
 app.get("/", (req, res) => {
   res.send("Api working");
