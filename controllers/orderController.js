@@ -23,7 +23,7 @@ const sendPaymentFailedEmail = async (order, responseCode) => {
         <h2>⚠️ Pago fallido</h2>
 
         <p>
-          Redsys ha informado de un intento de pago no autorizado.
+          Redsys ha informado de un intento de pago.
         </p>
 
         <hr>
@@ -725,20 +725,51 @@ const placeOrder = async (req, res) => {
 
 // Verify order after payment
 const verifyOrder = async (req, res) => {
-  const { orderId, success } = req.body;
-  ////console.log("req.body", req.body);  // Verifica que los datos estén llegando
+  const { orderId } = req.body;
 
   try {
-    if (success === "true") {
-      await orderModel.findByIdAndUpdate(orderId, { payment: true });
-      res.json({ success: true, message: "Order placed successfully" });
-    } else {
-      await orderModel.findByIdAndDelete(orderId);
-      res.json({ success: false, message: "Order failed" });
+    if (!orderId) {
+      return res.json({
+        success: false,
+        message: "Order ID is required",
+      });
     }
+
+    const order = await orderModel.findById(orderId);
+
+    if (!order) {
+      return res.json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    // El estado real del pago lo determina la notificación
+    // servidor-a-servidor de Redsys.
+    if (order.payment === true) {
+      return res.json({
+        success: true,
+        message: "Pago realizado",
+        order,
+      });
+    }
+
+    // El pedido existe pero Redsys todavía no ha confirmado
+    // el pago.
+    return res.json({
+      success: false,
+      message: "Pago pendiente",
+      paymentStatus: "pending",
+      order,
+    });
+
   } catch (error) {
-    ////console.log(error);
-    res.json({ success: false, message: error.message });
+    console.error("Error verificando el pedido:", error);
+
+    return res.json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 
