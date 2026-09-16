@@ -1009,7 +1009,7 @@ const placeOrderRedsys = async (req, res) => {
     // Envío gratis
     let adjustedDeliveryFee = delivery_fee;
 
-    if (amount > 45) {
+    if (amount > 40) {
       adjustedDeliveryFee = 0;
     }
 
@@ -1076,6 +1076,11 @@ const placeOrderRedsys = async (req, res) => {
       redsysOrder,
       merchantParametersBase64,
     );
+    console.log("========== REDSYS ==========");
+    console.log("MerchantURL:", `${origin_backend}/api/order/redsys/notification`);
+    console.log("Order:", redsysOrder);
+    console.log("Amount:", Math.round(amount * 100));
+    console.log("============================");
 
     res.json({
       success: true,

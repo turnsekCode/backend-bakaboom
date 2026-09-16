@@ -23,7 +23,7 @@ connectCloudinary();
 
 //middlewares
 app.use(express.urlencoded({
-  extended: false,
+  extended: true,
 }));
 app.use(express.json());
 //app.use(cors({ origin: "*", credentials: true }));
