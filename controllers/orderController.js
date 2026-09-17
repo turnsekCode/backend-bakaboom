@@ -1001,30 +1001,53 @@ const placeOrderRedsys = async (req, res) => {
 
     const { origin } = req.headers;
 
-    const origin_backend = "https://backend-bakaboom.vercel.app";
+    const origin_backend =
+      "https://backend-bakaboom.vercel.app";
 
-    // Generar una sola vez el número de pedido de Redsys
+    // =====================================================
+    // GENERAR PEDIDO REDSYS
+    // =====================================================
+
     const redsysOrder =
       "26" + Date.now().toString().slice(-10);
 
-    // Envío gratis
+    // =====================================================
+    // CALCULAR ENVÍO
+    // =====================================================
+
+    const postalCode = String(
+      address?.postalCode || ""
+    ).trim();
+
+    const isBalearic = postalCode.startsWith("07");
+
     let adjustedDeliveryFee = delivery_fee;
 
-    if (amount > 40) {
+    // Si es Baleares → 19 €
+    if (isBalearic) {
+      adjustedDeliveryFee = 19;
+    }
+    // Si NO es Baleares y supera 40 € → envío gratis
+    else if (amount > 40) {
       adjustedDeliveryFee = 0;
     }
 
-    // Crear orden
+    // =====================================================
+    // CREAR ORDEN
+    // =====================================================
+
     const orderData = {
       items,
       address,
       orderNumber,
 
-      // Guardamos el identificador de Redsys
+      // Identificador de Redsys
       redsysOrder,
 
+      // Envío calculado
       delivery_fee: adjustedDeliveryFee,
 
+      // Total final recibido desde frontend
       amount,
 
       paymentMethod,
@@ -1038,8 +1061,15 @@ const placeOrderRedsys = async (req, res) => {
 
     await newOrder.save();
 
-    // Importe en céntimos
+    // =====================================================
+    // IMPORTE EN CÉNTIMOS
+    // =====================================================
+
     const totalAmount = Math.round(amount * 100);
+
+    // =====================================================
+    // PARÁMETROS REDSYS
+    // =====================================================
 
     const merchantParameters = {
       DS_MERCHANT_AMOUNT: totalAmount.toString(),
@@ -1060,32 +1090,86 @@ const placeOrderRedsys = async (req, res) => {
       DS_MERCHANT_MERCHANTURL:
         `${origin_backend}/api/order/redsys/notification`,
 
-      // Redirecciones del usuario
+      // Pago correcto
       DS_MERCHANT_URLOK:
         `${origin}/verify?success=true&orderId=${newOrder._id}`,
 
+      // Pago rechazado
       DS_MERCHANT_URLKO:
         `${origin}/verify?success=false&orderId=${newOrder._id}`,
 
+      // Solo Bizum
       ...(paymentMethod === "bizum"
-        ? { DS_MERCHANT_PAYMETHODS: "z" }
-        : {})
+        ? {
+            DS_MERCHANT_PAYMETHODS: "z",
+          }
+        : {}),
     };
 
-    const merchantParametersBase64 = Buffer.from(
-      JSON.stringify(merchantParameters),
-    ).toString("base64");
+    // =====================================================
+    // CODIFICAR PARÁMETROS
+    // =====================================================
+
+    const merchantParametersBase64 =
+      Buffer.from(
+        JSON.stringify(merchantParameters)
+      ).toString("base64");
+
+    // =====================================================
+    // GENERAR FIRMA
+    // =====================================================
 
     const signature = createSignature(
       process.env.REDSYS_SECRET_KEY,
       redsysOrder,
-      merchantParametersBase64,
+      merchantParametersBase64
     );
-    console.log("========== REDSYS ==========");
-    console.log("MerchantURL:", `${origin_backend}/api/order/redsys/notification`);
-    console.log("Order:", redsysOrder);
-    console.log("Amount:", Math.round(amount * 100));
-    console.log("============================");
+
+    // =====================================================
+    // DEBUG
+    // =====================================================
+
+    console.log(
+      "========== REDSYS =========="
+    );
+
+    console.log(
+      "Postal code:",
+      postalCode
+    );
+
+    console.log(
+      "Baleares:",
+      isBalearic
+    );
+
+    console.log(
+      "Delivery fee:",
+      adjustedDeliveryFee
+    );
+
+    console.log(
+      "MerchantURL:",
+      `${origin_backend}/api/order/redsys/notification`
+    );
+
+    console.log(
+      "Order:",
+      redsysOrder
+    );
+
+    console.log(
+      "Amount:",
+      totalAmount
+    );
+
+    console.log(
+      "============================"
+    );
+
+    // =====================================================
+    // RESPUESTA
+    // =====================================================
 
     res.json({
       success: true,
@@ -1099,9 +1183,11 @@ const placeOrderRedsys = async (req, res) => {
         Ds_MerchantParameters:
           merchantParametersBase64,
 
-        Ds_Signature: signature,
+        Ds_Signature:
+          signature,
       },
     });
+
   } catch (error) {
     console.error(error);
 
