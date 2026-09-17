@@ -1245,12 +1245,6 @@ app.get("/", (req, res) => {
   res.send("Api working");
 });
 
-app.get("/debug-db", (req, res) => {
-  res.json({
-    mongodb_uri: process.env.MONGODB_URI
-  });
-});
-
 app.listen(port, "0.0.0.0", () =>
   console.log("Servidor corriendo en puerto:" + port),
 );
