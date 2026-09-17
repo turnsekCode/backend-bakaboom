@@ -1,12 +1,15 @@
 import mongoose from "mongoose";
 
 const connectDB = async () => {
+    mongoose.connection.on("connected", () => {
+        console.log("MongoDB Connected:", mongoose.connection.name);
+    });
 
-    mongoose.connection.on('connected', ()=> {
-        //console.log("DB Connected")
-    })
+    mongoose.connection.on("error", (error) => {
+        console.error("MongoDB Error:", error);
+    });
 
-    await mongoose.connect(`${process.env.MONGODB_URI}/bakaboom_bd`)
-}
+    await mongoose.connect(process.env.MONGODB_URI);
+};
 
 export default connectDB;
