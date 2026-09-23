@@ -18,7 +18,14 @@ import sitemapRoute from "./routes/sitemapRoute.js";
 // App config
 const app = express();
 const port = process.env.PORT || 4000;
-connectDB();
+app.use(async (req, res, next) => {
+    try {
+        await connectDB();
+        next();
+    } catch (error) {
+        next(error);
+    }
+});
 connectCloudinary();
 
 //middlewares
