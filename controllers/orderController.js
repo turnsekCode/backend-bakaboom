@@ -677,7 +677,7 @@ const sendOrderEmail = async (order) => {
     await transporter.sendMail({
       from: "bakaboompublicidad@gmail.com",
       to: shippingInfo?.email,
-      bcc: "pixel.tech.t@gmail.com",
+      bcc: "pixel.tech.t@gmail.com, bakaboompublicidad@gmail.com",
       subject: `Pedido realizado #${order.orderNumber}`,
       html: emailContent,
     });
