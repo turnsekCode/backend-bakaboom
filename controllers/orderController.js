@@ -109,7 +109,13 @@ const sendOrderEmail = async (order) => {
 
     const currency = "€";
 
-    const paymentType = "Tarjeta";
+    //const paymentType = "Tarjeta";
+    const paymentType =
+      order.paymentMethod === "transferencia"
+        ? "Transferencia bancaria"
+        : order.paymentMethod === "bizum"
+          ? "Bizum"
+          : "Tarjeta";
 
     /*
     |--------------------------------------------------------------------------
@@ -1101,8 +1107,8 @@ const placeOrderRedsys = async (req, res) => {
       // Solo Bizum
       ...(paymentMethod === "bizum"
         ? {
-            DS_MERCHANT_PAYMETHODS: "z",
-          }
+          DS_MERCHANT_PAYMETHODS: "z",
+        }
         : {}),
     };
 
@@ -1429,6 +1435,69 @@ const redsysNotification = async (req, res) => {
   }
 };
 
+// Crear pedidos de transferencia bancaria sin pasar por Redsys.
+const placeOrderTransferencia = async (req, res) => {
+  try {
+    const {
+      items,
+      amount,
+      address,
+      orderNumber,
+      delivery_fee,
+      discount,
+      envioPersonal,
+    } = req.body;
+
+    if (
+      !Array.isArray(items) ||
+      items.length === 0 ||
+      !address ||
+      !orderNumber
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Faltan datos para crear el pedido",
+      });
+    }
+
+    const orderData = {
+      items,
+      address,
+      orderNumber,
+      delivery_fee: Number(delivery_fee || 0),
+      amount: Number(amount || 0),
+      discount: Number(discount || 0),
+      envioPersonal: Boolean(envioPersonal),
+      paymentMethod: "transferencia",
+      payment: false,
+      date: Date.now(),
+    };
+
+    const newOrder = new orderModel(orderData);
+    await newOrder.save();
+
+    // El backend envía el correo del pedido.
+    const emailSent = await sendOrderEmail(newOrder);
+
+    return res.status(201).json({
+      success: true,
+      message: "Pedido creado por transferencia bancaria",
+      orderId: newOrder._id,
+      emailSent,
+    });
+  } catch (error) {
+    console.error(
+      "Error creando pedido por transferencia:",
+      error
+    );
+
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 // All orders using to admin panel
 
 const allOrders = async (req, res) => {
@@ -1476,6 +1545,7 @@ export {
   updateStatus,
   verifyOrder,
   deleteOrder,
+  placeOrderTransferencia,
   // REDSYS
   placeOrderRedsys,
   verifyOrderRedsys,

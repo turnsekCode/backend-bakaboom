@@ -1,5 +1,5 @@
 import express from 'express'
-import {placeOrder,allOrders,userOrders,updateStatus, verifyOrder, placeOrderRedsys, verifyOrderRedsys,redsysNotification,  deleteOrder} from '../controllers/orderController.js'
+import {placeOrder,allOrders,userOrders,updateStatus, verifyOrder, placeOrderRedsys, verifyOrderRedsys,redsysNotification,  deleteOrder, placeOrderTransferencia} from '../controllers/orderController.js'
 import adminAuth from '../middleware/adminAuth.js'
 
 
@@ -11,7 +11,7 @@ orderRoute.post('/status', adminAuth, updateStatus)
 
 // payment features
 orderRoute.post('/place', placeOrder)
-
+orderRoute.post('/transferencia', placeOrderTransferencia)
 // verify payment 
 orderRoute.post('/verify_old', verifyOrder)
 
